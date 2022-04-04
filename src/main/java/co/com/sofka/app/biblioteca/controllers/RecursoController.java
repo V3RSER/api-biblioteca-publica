@@ -26,32 +26,41 @@ public class RecursoController {
     // DELETE
     @DeleteMapping("/recurso/{id}")
     public ResponseEntity<RecursoDTO> delete(@PathVariable("id") String id) {
-        return new ResponseEntity<>(this.service.delete(id), HttpStatus.OK);
+        return this.service.findById(id).isEmpty() ?
+                new ResponseEntity<>(new RecursoDTO(), HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(this.service.delete(id).get(), HttpStatus.OK);
     }
 
     // PUT
     @PutMapping("/recurso/{id}")
     public ResponseEntity<RecursoDTO> update(@PathVariable("id") String id,
                                              @RequestBody RecursoDTO recursoDTO) {
-        return new ResponseEntity<>(this.service.update(id, recursoDTO), HttpStatus.OK);
+        return this.service.findById(id).isEmpty() ?
+                new ResponseEntity<>(new RecursoDTO(), HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(this.service.update(id, recursoDTO).get(), HttpStatus.OK);
     }
 
     @PutMapping("/recurso/{id}/prestar")
     public ResponseEntity<String> lend(@PathVariable("id") String id) {
-        return new ResponseEntity<>(this.service.lend(id), HttpStatus.OK);
+        return this.service.findById(id).isEmpty() ?
+                new ResponseEntity<>("El recurso no existe", HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(this.service.lend(id).get(), HttpStatus.OK);
 
     }
 
     @PutMapping("/recurso/{id}/devolver")
     public ResponseEntity<String> giveBack(@PathVariable("id") String id) {
-        return new ResponseEntity<>(this.service.giveBack(id), HttpStatus.OK);
-
+        return this.service.findById(id).isEmpty() ?
+                new ResponseEntity<>("El recurso no existe", HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(this.service.giveBack(id).get(), HttpStatus.OK);
     }
 
     // GET
     @GetMapping("/recurso/{id}")
     public ResponseEntity<RecursoDTO> findById(@PathVariable("id") String id) {
-        return new ResponseEntity<>(this.service.findById(id), HttpStatus.OK);
+        return this.service.findById(id).isEmpty() ?
+                new ResponseEntity<>(new RecursoDTO(), HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(this.service.findById(id).get(), HttpStatus.OK);
     }
 
     @GetMapping("/recurso/tipo/{tipo}")
@@ -77,6 +86,8 @@ public class RecursoController {
 
     @GetMapping("/recurso/{id}/disponible")
     public ResponseEntity<String> available(@PathVariable("id") String id) {
-        return new ResponseEntity<>(this.service.available(id), HttpStatus.OK);
+        return this.service.findById(id).isEmpty() ?
+                new ResponseEntity<>("El recurso no existe", HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(this.service.available(id).get(), HttpStatus.OK);
     }
 }
